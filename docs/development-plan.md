@@ -127,7 +127,7 @@ gleanstep/
 
 ### M3 — 上线（P0）
 - [ ] 移动端适配检查（Lighthouse 移动分 ≥ 95）
-- [x] 部署 GitHub Pages（2026-11-11 配置完成，待推送仓库验证）：
+- [x] 部署 GitHub Pages（2026-11-11 首次部署成功，https://canvay.github.io/gleanstep-site/ ）：
   - [x] `astro.config.mjs` 配置 `site: 'https://canvay.github.io'` + `base: '/gleanstep-site'`
   - [x] `.github/workflows/deploy.yml`（checkout → pnpm/action-setup 读 packageManager → Node 24 → `pnpm build` → deploy-pages）
   - [x] 站内链接全部改为 `import.meta.env.BASE_URL` base 感知写法（logo、favicon、字体、导航、返回链接）
