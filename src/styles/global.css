@@ -1,5 +1,3 @@
-/* 字体自托管:霞鹜文楷 Lite 由 BaseLayout 引入包内 CSS(同源加载,无 CDN 延迟) */
-
 @import 'tailwindcss';
 
 /* 暗色模式:手动切换(html.dark)优先,其次跟随系统 */
@@ -26,10 +24,6 @@
   --color-night-accent: #d05a43;
   --color-night-qing: #8fb0c4;
   --color-night-gold: #d9b23c;
-
-  --font-kai: 'LXGW WenKai Lite', 'LXGW WenKai', 'Kaiti SC', 'STKaiti', 'KaiTi', serif;
-  /* 数字/英文衬线体:拉丁字符走 Georgia,中文回落文楷 */
-  --font-display: Georgia, 'Times New Roman', 'LXGW WenKai', serif;
 }
 
 /* 暗色令牌覆盖(Tailwind v4 的工具类引用的是 CSS 变量,运行时即可切换) */
@@ -52,7 +46,7 @@
 
 @layer base {
   html {
-    font-family: var(--font-kai);
+    /* 系统默认无衬线:不设 font-family,交给 Tailwind 预检的 --font-sans 栈 */
     scroll-behavior: smooth;
   }
 

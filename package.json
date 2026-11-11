@@ -13,7 +13,6 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.3.5",
     "astro": "^7.4.10",
-    "lxgw-wenkai-lite-webfont": "^1.7.0",
     "tailwindcss": "^4.3.5"
   }
 }

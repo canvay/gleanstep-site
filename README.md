@@ -6,7 +6,7 @@
 
 - [Astro 5](https://astro.build) — Islands 架构,页面默认零 JS
 - [Tailwind CSS 4](https://tailwindcss.com) — 原子样式 + 主题令牌
-- 霞鹜文楷 Lite(LXGW WenKai Lite)— 开源可商用中文字体,**自托管**(`lxgw-wenkai-lite-webfont` 包,按 unicode-range 分包同源加载)
+- 字体:**系统默认无衬线**(零下载、零版面切换,不引入任何 webfont)
 
 ## 常用命令
 

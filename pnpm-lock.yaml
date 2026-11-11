@@ -172,9 +172,6 @@ importers:
       astro:
         specifier: ^7.4.10
         version: 7.4.10(jiti@2.7.0)(yaml@2.9.1)
-      lxgw-wenkai-lite-webfont:
-        specifier: ^1.7.0
-        version: 1.7.0
       tailwindcss:
         specifier: ^4.3.5
         version: 4.3.5
@@ -1128,9 +1125,6 @@ packages:
   lru-cache@11.5.3:
     resolution: {integrity: sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==}
     engines: {node: 20 || >=22}
-
-  lxgw-wenkai-lite-webfont@1.7.0:
-    resolution: {integrity: sha512-VcQYNRpdXAxaZsJ18rfT1mmAreGqkIFNZ/9pdVLbT2Tkb+2lLWJDXq4zYxMEk9AcecSnxO31R2LHh5ieLlxjRg==}
 
   magic-string@1.4.5:
     resolution: {integrity: sha512-oLLC2+YvQUfAa+vxoufE/yc1icb87M9iXIRqAoR/2EhE/8cb3SF/+Gi0c2By1B+5Vz2e2vQtUvHiu1+63Znh+w==}
@@ -2398,8 +2392,6 @@ snapshots:
       lightningcss-win32-x64-msvc: 1.33.0
 
   lru-cache@11.5.3: {}
-
-  lxgw-wenkai-lite-webfont@1.7.0: {}
 
   magic-string@1.4.5:
     dependencies:
