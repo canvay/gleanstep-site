@@ -1,0 +1,183 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InkCanvas from '../components/InkCanvas.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+/** base 感知路径前缀(保证以 / 结尾) */
+const BASE = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : import.meta.env.BASE_URL + '/';
+---
+
+<BaseLayout title="拾阶 Gleanstep —— 大道三千，拾阶而上">
+  <InkCanvas />
+
+  <header class="absolute inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-5">
+    <a href={BASE} class="flex items-center gap-3">
+      <img src={`${BASE}logos/gleanstep-logo.svg`} alt="Gleanstep" class="h-9 w-auto dark:hidden" width="720" height="200" />
+      <img src={`${BASE}logos/gleanstep-logo-reverse.svg`} alt="Gleanstep" aria-hidden="true" class="hidden h-9 w-auto dark:block" width="720" height="200" />
+    </a>
+    <ThemeToggle />
+  </header>
+
+  <main class="flex flex-1 flex-col">
+    <section class="relative min-h-[92vh] overflow-hidden">
+      <!--
+        水墨仙山背景(参考 WorkBuddy 峰林图):画布 1600×700,
+        内容压缩进 y≥100,宽屏 slice 裁切下峰顶不再出框。
+        峰林三层递进 + 皴纹 + 赭石淡彩 + 松树(defs 复制) + 长阶 + 云海。
+      -->
+      <svg
+        class="absolute inset-x-0 bottom-0 h-full w-full"
+        viewBox="0 0 1600 700"
+        preserveAspectRatio="xMidYMax slice"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="peak-dark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--color-fg)" stop-opacity="0.78" />
+            <stop offset="0.5" stop-color="var(--color-fg)" stop-opacity="0.45" />
+            <stop offset="1" stop-color="var(--color-fg)" stop-opacity="0.16" />
+          </linearGradient>
+          <linearGradient id="peak-mid" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--color-fg)" stop-opacity="0.4" />
+            <stop offset="1" stop-color="var(--color-fg)" stop-opacity="0.08" />
+          </linearGradient>
+          <pattern id="cu" width="9" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(7)">
+            <path d="M 4.5 0 Q 7 12 4.5 24" fill="none" stroke="var(--color-fg)" stroke-width="1" opacity="0.5" />
+          </pattern>
+          <g id="pine">
+            <path d="M -2 0 L 2 0 L 1.3 -15 L -1.3 -15 Z" />
+            <path d="M 0 -36 L 11 -23 L -11 -23 Z" />
+            <path d="M 0 -28 L 14 -15 L -14 -15 Z" />
+            <path d="M 0 -21 L 17 -7 L -17 -7 Z" />
+          </g>
+          <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="26" />
+          </filter>
+          <filter id="soft-sm" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="10" />
+          </filter>
+        </defs>
+        <!-- 远景:左侧低岭 -->
+        <path d="M 40 700 L 40 577 C 120 564 200 546 285 527 L 300 700 Z" fill="var(--color-fg)" opacity="0.08" />
+        <!-- 远峰(赭石淡彩) -->
+        <path d="M 180 700 L 185 546 C 190 504 206 478 242 462 C 268 451 292 453 312 465 C 338 482 348 507 351 532 L 354 700 Z" fill="var(--color-fg)" opacity="0.14" />
+        <path d="M 180 700 L 185 546 C 190 504 206 478 242 462 C 268 451 292 453 312 465 C 338 482 348 507 351 532 L 354 700 Z" fill="var(--color-ochre)" opacity="0.12" />
+        <path d="M 330 700 L 336 560 C 342 520 362 492 400 476 C 430 464 460 465 484 479 C 512 498 524 524 528 551 L 532 700 Z" fill="var(--color-ochre)" opacity="0.18" />
+        <path d="M 1420 700 L 1426 482 C 1442 434 1472 403 1522 391 C 1562 383 1602 387 1642 405 L 1662 700 Z" fill="var(--color-ochre)" opacity="0.16" />
+        <!-- 中景峰群 -->
+        <path d="M 480 700 L 485 498 C 490 443 510 404 550 385 C 576 373 602 374 624 389 C 652 409 662 437 666 470 L 668 700 Z" fill="url(#peak-mid)" />
+        <path d="M 480 700 L 485 498 C 490 443 510 404 550 385 C 576 373 602 374 624 389 C 652 409 662 437 666 470 L 668 700 Z" fill="var(--color-ochre)" opacity="0.08" />
+        <path d="M 620 700 L 622 436 C 624 372 642 327 692 300 C 722 283 752 283 780 302 C 818 328 832 367 836 414 L 840 700 Z" fill="url(#peak-mid)" />
+        <use href="#pine" transform="translate(706 296) scale(0.75)" opacity="0.5" />
+        <use href="#pine" transform="translate(562 381) scale(0.6)" opacity="0.45" />
+        <!-- 主峰群:浓墨近景 -->
+        <path d="M 850 700 L 850 327 C 848 233 870 171 930 132 C 961 113 1001 109 1031 129 C 1092 168 1120 249 1128 334 L 1138 700 Z" fill="url(#peak-dark)" />
+        <path d="M 850 700 L 850 327 C 848 233 870 171 930 132 C 961 113 1001 109 1031 129 C 1092 168 1120 249 1128 334 L 1138 700 Z" fill="url(#cu)" opacity="0.22" />
+        <path d="M 1140 700 L 1150 373 C 1156 296 1180 233 1242 202 C 1277 184 1312 187 1342 210 C 1392 254 1410 327 1414 404 L 1418 700 Z" fill="url(#peak-dark)" />
+        <path d="M 1140 700 L 1150 373 C 1156 296 1180 233 1242 202 C 1277 184 1312 187 1342 210 C 1392 254 1410 327 1414 404 L 1418 700 Z" fill="url(#cu)" opacity="0.18" />
+        <use href="#pine" transform="translate(962 131) scale(1.05)" opacity="0.85" />
+        <use href="#pine" transform="translate(1035 136) scale(0.8)" opacity="0.8" />
+        <use href="#pine" transform="translate(1274 209) scale(0.85)" opacity="0.8" />
+        <!-- 长阶:自左下蜿蜒而上,没入云中 -->
+        <g fill="var(--color-fg)">
+          <rect x="140" y="675" width="40" height="7" rx="2" opacity="0.5" />
+          <rect x="190" y="663" width="38" height="7" rx="2" opacity="0.47" />
+          <rect x="240" y="650" width="36" height="7" rx="2" opacity="0.44" />
+          <rect x="290" y="639" width="34" height="7" rx="2" opacity="0.41" />
+          <rect x="340" y="627" width="32" height="7" rx="2" opacity="0.38" />
+          <rect x="390" y="616" width="30" height="7" rx="2" opacity="0.35" />
+          <rect x="440" y="604" width="29" height="7" rx="2" opacity="0.31" />
+          <rect x="490" y="591" width="28" height="7" rx="2" opacity="0.27" />
+          <rect x="545" y="579" width="27" height="7" rx="2" opacity="0.23" />
+          <rect x="600" y="565" width="26" height="7" rx="2" opacity="0.19" />
+          <rect x="655" y="551" width="25" height="7" rx="2" opacity="0.16" />
+          <rect x="710" y="537" width="24" height="7" rx="2" opacity="0.13" />
+          <rect x="765" y="523" width="23" height="7" rx="2" opacity="0.1" />
+          <rect x="815" y="507" width="22" height="7" rx="2" opacity="0.08" />
+          <rect x="860" y="492" width="21" height="7" rx="2" opacity="0.06" />
+          <rect x="900" y="476" width="20" height="7" rx="2" opacity="0.04" />
+        </g>
+        <!-- 云海:峰腰穿行,右下大留白 -->
+        <ellipse cx="980" cy="234" rx="280" ry="48" fill="var(--color-bg)" opacity="0.5" filter="url(#soft)" />
+        <ellipse cx="760" cy="482" rx="430" ry="75" fill="var(--color-bg)" opacity="0.7" filter="url(#soft)" />
+        <ellipse cx="400" cy="607" rx="380" ry="80" fill="var(--color-bg)" opacity="0.45" filter="url(#soft)" />
+        <ellipse cx="200" cy="498" rx="260" ry="45" fill="var(--color-bg)" opacity="0.4" filter="url(#soft)" />
+        <ellipse cx="1240" cy="591" rx="460" ry="130" fill="var(--color-bg)" opacity="0.85" filter="url(#soft)" />
+        <ellipse cx="1450" cy="498" rx="260" ry="60" fill="var(--color-bg)" opacity="0.5" filter="url(#soft-sm)" />
+      </svg>
+
+      <!-- 竖排站名 + tagline(左上虚空,呼应参考图构图) -->
+      <div class="relative z-10 flex justify-start px-[7%] pt-[11vh] sm:px-[9%]">
+        <div class="vertical-rl flex items-start gap-7 sm:gap-11">
+          <h1 class="hero-rise font-kai text-7xl leading-none tracking-[0.15em] sm:text-8xl md:text-9xl">拾阶</h1>
+          <!-- 小朱砂印 -->
+          <span
+            class="hero-rise mt-10 grid size-9 rotate-2 place-items-center self-end rounded-sm bg-accent text-bg"
+            aria-hidden="true"
+          >
+            <span class="vertical-rl text-[10px] leading-tight">拾阶之印</span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右侧题签式导航:纸色竖条,贴右缘悬浮 -->
+    <nav class="fixed right-4 top-1/2 z-30 -translate-y-1/2 sm:right-8" aria-label="栏目入口">
+      <div class="flex flex-col items-center gap-5 rounded-sm border border-fg/10 bg-bg/85 px-1.5 py-5 shadow-[0_6px_24px_rgba(0,0,0,0.08)] backdrop-blur-sm">
+        <a href={`${BASE}blog`} class="group flex flex-col items-center gap-1.5">
+          <span class="vertical-rl font-kai text-lg text-fg transition-colors group-hover:text-accent">履痕</span>
+          <span class="text-[10px] tracking-[0.25em] text-fg-faint">博客</span>
+        </a>
+        <span class="h-5 w-px bg-fg/15"></span>
+        <a href={`${BASE}tools`} class="group flex flex-col items-center gap-1.5">
+          <span class="vertical-rl font-kai text-lg text-fg transition-colors group-hover:text-accent">法器</span>
+          <span class="text-[10px] tracking-[0.25em] text-fg-faint">工具</span>
+        </a>
+        <span class="h-5 w-px bg-fg/15"></span>
+        <a href={`${BASE}about`} class="group flex flex-col items-center gap-1.5">
+          <span class="vertical-rl font-kai text-lg text-fg transition-colors group-hover:text-accent">其人</span>
+          <span class="text-[10px] tracking-[0.25em] text-fg-faint">关于</span>
+        </a>
+      </div>
+    </nav>
+
+  </main>
+</BaseLayout>
+
+<style>
+  /* 入场动效:站名缓入,题签导航次第浮现 */
+  .hero-rise {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: rise 1.2s ease-out 0.2s forwards;
+  }
+  @keyframes rise {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  nav[aria-label='栏目入口'] a {
+    opacity: 0;
+    animation: rise 1s ease-out forwards;
+  }
+  nav[aria-label='栏目入口'] a:nth-child(1) {
+    animation-delay: 0.5s;
+  }
+  nav[aria-label='栏目入口'] a:nth-child(2) {
+    animation-delay: 0.8s;
+  }
+  nav[aria-label='栏目入口'] a:nth-child(3) {
+    animation-delay: 1.1s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-rise,
+    nav[aria-label='栏目入口'] a {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

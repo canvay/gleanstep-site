@@ -1,0 +1,78 @@
+/* 字体自托管:霞鹜文楷 Lite 由 BaseLayout 引入包内 CSS(同源加载,无 CDN 延迟) */
+
+@import 'tailwindcss';
+
+/* 暗色模式:手动切换(html.dark)优先,其次跟随系统 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* ---- 明:宣纸米白 / 墨黑 / 朱砂 ---- */
+  --color-bg: #f7f2e7; /* 宣纸 */
+  --color-bg-2: #efe7d5; /* 纸之暗纹 */
+  --color-fg: #2c2c2a; /* 墨黑(与 logo 同色) */
+  --color-fg-soft: #55534e;
+  --color-fg-faint: #8a877f;
+  --color-accent: #b03a2e; /* 朱砂红 */
+  --color-qing: #3d5a6c; /* 黛青 */
+  --color-ochre: #a8845c; /* 赭石(远山淡彩) */
+  --color-gold: #c9a227; /* 与 logo 同色 */
+
+  /* ---- 暗:「夜行山色」 ---- */
+  --color-night-bg: #15171a;
+  --color-night-bg-2: #1d2025;
+  --color-night-fg: #d9d4c7;
+  --color-night-fg-soft: #a5a193;
+  --color-night-fg-faint: #716e64;
+  --color-night-accent: #d05a43;
+  --color-night-qing: #8fb0c4;
+  --color-night-gold: #d9b23c;
+
+  --font-kai: 'LXGW WenKai Lite', 'LXGW WenKai', 'Kaiti SC', 'STKaiti', 'KaiTi', serif;
+  /* 数字/英文衬线体:拉丁字符走 Georgia,中文回落文楷 */
+  --font-display: Georgia, 'Times New Roman', 'LXGW WenKai', serif;
+}
+
+/* 暗色令牌覆盖(Tailwind v4 的工具类引用的是 CSS 变量,运行时即可切换) */
+:root.dark {
+  --color-bg: var(--color-night-bg);
+  --color-bg-2: var(--color-night-bg-2);
+  --color-fg: var(--color-night-fg);
+  --color-fg-soft: var(--color-night-fg-soft);
+  --color-fg-faint: var(--color-night-fg-faint);
+  --color-accent: var(--color-night-accent);
+  --color-qing: var(--color-night-qing);
+  --color-ochre: #8f7854;
+  --color-gold: var(--color-night-gold);
+}
+
+@utility vertical-rl {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-kai);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    transition:
+      background-color 0.4s ease,
+      color 0.4s ease;
+    /* 宣纸底纹:极淡的径向晕染 */
+    background-image: radial-gradient(
+      ellipse 120% 80% at 50% -10%,
+      color-mix(in srgb, var(--color-bg-2) 55%, transparent),
+      transparent 70%
+    );
+  }
+
+  /* 朱砂只给提灯与印章入口(见设计规范);选中态用黛青 */
+  ::selection {
+    background-color: var(--color-qing);
+    color: var(--color-bg);
+  }
+}

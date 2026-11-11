@@ -1,0 +1,173 @@
+---
+/**
+ * 氛围画布:淡墨雾气缓慢流动 + 花瓣/落叶飘落(拾阶之物)。
+ * 设计规范:Canvas 只负责「雾气 + 落瓣」;朱砂红不进画布(全页仅提灯微光与印章入口)。
+ * - 固定铺满视口、置于内容之下
+ * - prefers-reduced-motion 时只渲染一帧静态画面
+ * - 页面不可见时暂停,省电
+ */
+---
+
+<canvas id="ink-canvas" class="pointer-events-none fixed inset-0 -z-10" aria-hidden="true"></canvas>
+
+<script>
+  const canvas = document.getElementById('ink-canvas');
+  if (canvas instanceof HTMLCanvasElement) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+      let w = 0;
+      let h = 0;
+      let raf = 0;
+      let running = false;
+
+      const rand = (min: number, max: number) => min + Math.random() * (max - min);
+
+      /** 墨色与朱砂随主题令牌走:花瓣用朱砂粉,雾气用墨色 */
+      const palette = () => {
+        const s = getComputedStyle(document.documentElement);
+        return {
+          accent: s.getPropertyValue('--color-accent').trim() || '#b03a2e',
+          ink: s.getPropertyValue('--color-fg').trim() || '#2c2c2a',
+        };
+      };
+
+      const resize = () => {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+
+      /* ---- 雾气:大而淡的墨团,横向缓漂,循环往复 ---- */
+      interface Mist { x: number; y: number; r: number; vx: number; alpha: number; }
+      const mists: Mist[] = [];
+      const spawnMist = (anywhere = false) => {
+        mists.push({
+          x: anywhere ? rand(0, w) : w + 300,
+          y: rand(h * 0.15, h * 0.9),
+          r: rand(120, 320),
+          vx: -rand(0.04, 0.14),
+          alpha: rand(0.02, 0.05),
+        });
+      };
+
+      /* ---- 落瓣:淡墨花瓣,左右轻摆、自身旋转 ---- */
+      interface Petal { x: number; y: number; s: number; rot: number; vr: number; vy: number; sway: number; phase: number; alpha: number; }
+      const petals: Petal[] = [];
+      const spawnPetal = (anywhere = false) => {
+        petals.push({
+          x: rand(0, w),
+          y: anywhere ? rand(0, h) : rand(-40, -10),
+          s: rand(4, 9),
+          rot: rand(0, Math.PI * 2),
+          vr: rand(-0.012, 0.012),
+          vy: rand(0.25, 0.7),
+          sway: rand(0.4, 1.2),
+          phase: rand(0, Math.PI * 2),
+          alpha: rand(0.35, 0.65),
+        });
+      };
+
+      const drawMist = (m: Mist, color: string) => {
+        const g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r);
+        g.addColorStop(0, color);
+        g.addColorStop(1, 'transparent');
+        ctx.save();
+        ctx.globalAlpha = m.alpha;
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      };
+
+      const drawPetal = (pt: Petal, color: string) => {
+        ctx.save();
+        ctx.translate(pt.x, pt.y);
+        ctx.rotate(pt.rot + Math.sin(pt.phase) * 0.4);
+        ctx.globalAlpha = pt.alpha;
+        ctx.fillStyle = color;
+        const s = pt.s;
+        ctx.beginPath();
+        ctx.moveTo(0, -s);
+        ctx.bezierCurveTo(s * 0.9, -s * 0.4, s * 0.9, s * 0.5, 0, s);
+        ctx.bezierCurveTo(-s * 0.9, s * 0.5, -s * 0.9, -s * 0.4, 0, -s);
+        ctx.fill();
+        ctx.restore();
+      };
+
+      const seed = () => {
+        mists.length = 0;
+        petals.length = 0;
+        for (let i = 0; i < 5; i++) spawnMist(true);
+        const count = Math.min(24, Math.max(10, Math.round(w / 80)));
+        for (let i = 0; i < count; i++) spawnPetal(true);
+      };
+
+      let t = 0;
+      const frame = () => {
+        t += 0.016;
+        const p = palette();
+        ctx.clearRect(0, 0, w, h);
+
+        /* 雾气横向缓漂,漂出左界即回到右侧,数量封顶 */
+        if (mists.length < 8 && Math.random() < 0.003) spawnMist();
+        for (const m of mists) {
+          m.x += m.vx;
+          if (m.x < -m.r - 300) {
+            m.x = w + m.r + rand(0, 400);
+            m.y = rand(h * 0.15, h * 0.9);
+          }
+          drawMist(m, p.ink);
+        }
+
+        /* 花瓣出界即回收 */
+        for (const pt of petals) {
+          pt.y += pt.vy;
+          pt.x += Math.sin(t * pt.sway + pt.phase) * 0.4;
+          pt.rot += pt.vr;
+          drawPetal(pt, p.accent);
+          if (pt.y > h + 30) {
+            Object.assign(pt, { x: rand(0, w), y: rand(-40, -10), s: rand(4, 9), rot: rand(0, Math.PI * 2), vy: rand(0.25, 0.7), sway: rand(0.4, 1.2), phase: rand(0, Math.PI * 2), alpha: rand(0.35, 0.65) });
+          }
+        }
+        if (running) raf = requestAnimationFrame(frame);
+      };
+
+      /** 静态一帧:reduced-motion 或初始化时用 */
+      const drawStatic = () => {
+        const p = palette();
+        ctx.clearRect(0, 0, w, h);
+        for (const m of mists) drawMist(m, p.ink);
+        for (const pt of petals) drawPetal(pt, p.accent);
+      };
+
+      const start = () => {
+        if (running || reducedMotion.matches) return;
+        running = true;
+        raf = requestAnimationFrame(frame);
+      };
+      const stop = () => {
+        running = false;
+        cancelAnimationFrame(raf);
+      };
+
+      resize();
+      seed();
+      if (reducedMotion.matches) {
+        drawStatic();
+      } else {
+        start();
+        document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+        window.addEventListener('resize', () => {
+          resize();
+          seed();
+          if (!running) drawStatic();
+        });
+      }
+    }
+  }
+</script>

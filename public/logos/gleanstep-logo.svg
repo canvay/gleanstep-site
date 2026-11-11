@@ -1,0 +1,9 @@
+<svg viewBox="80 46 544 114" width="544" height="114" xmlns="http://www.w3.org/2000/svg">
+  <title>GleanStep — site logo (stairs lockup)</title>
+  <g fill="#2C2C2A">
+    <rect x="80" y="118" width="70" height="42" rx="6"/>
+    <rect x="154" y="76" width="70" height="42" rx="6"/>
+  </g>
+  <circle cx="188" cy="58" r="12" fill="#C9A227"/>
+  <text x="264" y="128" font-family="'Poppins','Montserrat','Segoe UI',Arial,sans-serif" font-size="76" font-weight="700" letter-spacing="0.5"><tspan fill="#2C2C2A">Glean</tspan><tspan fill="#C9A227">s</tspan><tspan fill="#2C2C2A">tep</tspan></text>
+</svg>

@@ -1,0 +1,28 @@
+---
+/**
+ * 印章风格入口:朱砂描边方印 + 竖排单字 + 横排栏目名。
+ * 悬停时"落印":整章反色、微微压角。
+ */
+interface Props {
+  href: string;
+  char: string;
+  label: string;
+  sub?: string;
+}
+const { href, char, label, sub } = Astro.props;
+---
+
+<a
+  href={href}
+  class="group flex flex-col items-center gap-3"
+>
+  <span
+    class="grid size-20 place-items-center rounded-md border-2 border-accent text-accent transition-all duration-200 group-hover:rotate-2 group-hover:bg-accent group-hover:text-bg group-hover:shadow-[3px_3px_0_0_var(--color-fg)]"
+  >
+    <span class="vertical-rl font-kai text-2xl leading-tight">{char}</span>
+  </span>
+  <span class="text-sm tracking-[0.3em] text-fg-soft transition-colors group-hover:text-accent">
+    {label}
+  </span>
+  {sub && <span class="text-xs text-fg-faint">{sub}</span>}
+</a>
